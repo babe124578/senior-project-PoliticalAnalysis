@@ -51,19 +51,24 @@ class MainPage extends Component {
                         </Col>
                         <Col>
                             <Row style={{ marginRight: '20px', marginTop: '75px' }}>
-                                <p style={{ width: this.state.left1,whiteSpace:'nowrap',textAlign: 'center' }}>เห็นด้วยกับรัฐบาล {this.state.left1}</p>
-                                <p style={{ width: this.state.mid1 ,textAlign: 'center'}}>เป็นกลางหรือไม่เกี่ยวข้อง</p>
-                                <p style={{ width: this.state.right1,textAlign: 'center' }}>ไม่เห็นด้วยกับรัฐบาล {this.state.right1}</p>
+                                <p style={{ width: this.state.left1, whiteSpace: 'nowrap', textAlign: 'center' }}>เห็นด้วยกับรัฐบาล</p>
+                                <p style={{ width: this.state.mid1, whiteSpace: 'nowrap', textAlign: 'center' }}>เป็นกลางหรือไม่เกี่ยวข้อง</p>
+                                <p style={{ width: this.state.right1, whiteSpace: 'nowrap', textAlign: 'center' }}>ไม่เห็นด้วยกับรัฐบาล</p>
                             </Row>
-                            <Row style={{ marginRight: '20px'}}>
-                                <p className="leftgreen" style={{ width: this.state.left1}}></p>
-                                <p className="midgrey" style={{ width: this.state.mid1 }}></p>
-                                <p className="rightred" style={{ width: this.state.right1 }}></p>
+                            <Row style={{ marginRight: '20px' }}>
+                                <p className="leftgreen" style={{ width: this.state.left1 }}>{this.state.left1}</p>
+                                <p className="midgrey" style={{ width: this.state.mid1 }}>{this.state.mid1}</p>
+                                <p className="rightred" style={{ width: this.state.right1 }}>{this.state.right1}</p>
                             </Row>
                             <Row style={{ marginRight: '20px', marginTop: '130px' }}>
-                                <p className="leftgreen" style={{ width: this.state.left2 }}>เห็นด้วยกับฝ่ายค้าน {this.state.left1}</p>
-                                <p className="midgrey" style={{ width: this.state.mid2 }}>เป็นกลางหรือไม่เกี่ยวข้อง</p>
-                                <p className="rightred" style={{ width: this.state.right2 }}>ไม่เห็นด้วยกับฝ่ายค้าน {this.state.right2}</p>
+                                <p style={{ width: this.state.left2, whiteSpace: 'nowrap', textAlign: 'center' }}>เห็นด้วยกับฝ่ายค้าน</p>
+                                <p style={{ width: this.state.mid2, whiteSpace: 'nowrap', textAlign: 'center' }}>เป็นกลางหรือไม่เกี่ยวข้อง</p>
+                                <p style={{ width: this.state.right2, whiteSpace: 'nowrap', textAlign: 'center' }}>ไม่เห็นด้วยกับฝ่ายค้าน</p>
+                            </Row>
+                            <Row style={{ marginRight: '20px' }}>
+                                <p className="leftgreen" style={{ width: this.state.left2 }}>{this.state.left2}</p>
+                                <p className="midgrey" style={{ width: this.state.mid2 }}>{this.state.mid2}</p>
+                                <p className="rightred" style={{ width: this.state.right2 }}>{this.state.right2}</p>
                             </Row>
                             <h4>wordcloud</h4>
                         </Col>
