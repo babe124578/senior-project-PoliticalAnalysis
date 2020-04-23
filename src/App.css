@@ -21,3 +21,21 @@
     white-space: nowrap;
     background-color: rgb(255, 111, 111);
 }
+
+.inputgroup {
+    width: 300px !important;
+}
+
+#popular {
+    font-size: 1.1rem;
+    color: white;
+}
+
+#headertoast {
+    background-color: rgb(78, 78, 78);
+}
+
+#popularity {
+    font-size: 0.7rem;
+    color: white;
+}

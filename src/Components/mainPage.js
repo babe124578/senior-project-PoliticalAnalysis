@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import '../App.css';
-import { Col, Row, Jumbotron } from 'react-bootstrap';
+import { Col, Row, Jumbotron, Button, InputGroup, FormControl, Toast, ToastHeader } from 'react-bootstrap';
 
 class MainPage extends Component {
     constructor(props) {
@@ -11,29 +11,67 @@ class MainPage extends Component {
             right1: '30%',
             left2: '35%',
             mid2: '40%',
-            right2: '25%'
+            right2: '25%',
+            keyword: '',
+            datas: []
         };
+    }
+
+    handleChange = (e) => {
+        this.setState({ keyword: e.target.value })
+    }
+
+    submitButton = (e) => {
+        fetch('http://localhost:5000/popular?keyword=' + this.state.keyword)
+            .then(res => res.json())
+            .then((data) => {
+                this.setState({ datas: data.popular })
+            })
+        console.log(this.state.keyword)
+        console.log(this.state.datas)
     }
 
     render() {
         return (
             <div>
                 <Col style={{ margin: 20 }}>
-                    <Row style={{ left: 'calc( 50% - 60px )', position: 'relative' }}>
+                    <Row className='justify-content-md-center'>
                         <h3>Enter Keyword</h3>
                     </Row>
-                    <Row style={{ left: 'calc( 50% - 60px )', position: 'relative' }}>
-                        <input></input>
+                    <Row className='justify-content-md-center'>
+                        <InputGroup className="inputgroup">
+                            <FormControl
+                                placeholder="Keyword"
+                                onChange={this.handleChange}
+                            />
+                            <InputGroup.Append>
+                                <Button
+                                    variant="outline-primary"
+                                    onClick={this.submitButton}
+                                >Search</Button>
+                            </InputGroup.Append>
+                        </InputGroup>
                     </Row>
                     <hr />
                     <Row>
                         <Col>
-                            <Jumbotron className='leftbox'>
-                                <h4>ตัวอย่างทวีตที่ได้รับความนิยม</h4>
-                                <hr />
-                                <br />
-                                <h5>เรียงตาม ... </h5>
-                            </Jumbotron>
+                            <Toast style={{ maxWidth: '100%' }}>
+                                <Toast.Header
+                                    closeButton={false}
+                                    id="headertoast"
+                                >
+                                    <strong className="mr-auto" id="popular">ตัวอย่างทวิตที่ได้รับความนิยม</strong>
+                                    <small id="popularity">ความนิยม</small>
+                                </Toast.Header>
+                                {this.state.datas.map(function (m, idx) {
+                                    return (
+                                        <Toast.Header closeButton={false} key={idx}>
+                                            <strong className="mr-auto">{m.text}</strong>
+                                            <small style={{marginLeft:5}}>{m.favC}</small>
+                                        </Toast.Header>
+                                    )
+                                })}
+                            </Toast>
                             <Jumbotron className='leftbox'>
                                 <h4>ตัวอย่างทวีตที่มี Agenda</h4>
                                 <hr />
