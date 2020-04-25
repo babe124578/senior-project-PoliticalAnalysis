@@ -2,9 +2,11 @@ from flask_cors import CORS, cross_origin
 from flask import Flask, Response, request
 import io
 from auth import access_key
+from clean import remove_emoji, remove_punct, remove_url
 from tweepy import OAuthHandler
 import tweepy
 import json
+import collections
 
 app = Flask(__name__)
 
@@ -19,11 +21,12 @@ auth = OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_secret)
 API = tweepy.API(auth)
 
+
 def pullData(keyword, ge, lang, typo, c):
     list_ = []
     counter = 0
     for tweet in tweepy.Cursor(API.search,
-                               q=keyword,
+                               q=keyword+' -filter:retweets',
                                g=ge,
                                lang=lang,
                                tweet_mode='extended',
@@ -36,6 +39,37 @@ def pullData(keyword, ge, lang, typo, c):
     return sorted(list_, key=lambda i: i['favC'], reverse=True)
 
 
+def list_of_dict_to_pd(list_):
+    newlist = []
+    for i in list_:
+        newlist.append(i['text'])
+    return newlist
+
+
+def cleanandcount(newlist):
+    newerlist = []
+    for i in newlist:
+        i = remove_punct(i)
+        i = remove_url(i)
+        i = remove_emoji(i)
+        newerlist.append(i)
+    joinlist = ' '.join(text for text in newerlist)
+    filtered_word = [word for word in joinlist.split()]
+    counted_words = collections.Counter(filtered_word)
+    tmp = []
+    for letter, count in counted_words.most_common():
+        tmp.append([letter, count])
+    return tmp
+
+def get_100_most_freq(temp):
+    tmp = []
+    for i in temp:
+        if len(tmp) == 100:
+            break
+        if i[1] > 1:
+            tmp.append({'text': i[0], 'value': i[1]})
+    return tmp
+
 @cross_origin()
 @app.route('/test')
 def test():
@@ -45,8 +79,8 @@ def test():
 @app.route('/popular')
 def popular():
     data = request.args.get('keyword')
-    pulldata = pullData(data,None,None,'popular',5)
-    return {'popular':pulldata}
+    pulldata = pullData(data, None, None, 'popular', 5)
+    return {'popular': pulldata}
 
 
 @app.route('/agenda')
@@ -59,6 +93,15 @@ def agenda():
 def news():
     data = request.args.get('keyword')
     return str('news'+data)
+
+
+@app.route('/wordcloud')
+def wordcloud():
+    data = request.args.get('keyword')
+    pulldata = pullData(data, None, None, 'mixed', 300)
+    df = list_of_dict_to_pd(pulldata)
+
+    return {'wordcloud': get_100_most_freq(cleanandcount(df))}
 
 
 if __name__ == '__main__':
