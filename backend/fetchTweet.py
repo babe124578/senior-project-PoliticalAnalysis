@@ -76,29 +76,19 @@ def test():
     return 'test'
 
 
-@app.route('/popular')
+@app.route('/tweetExample')
 def popular():
     data = request.args.get('keyword')
-    pulldata = pullData(data, None, None, 'popular', 5)
-    return {'popular': pulldata}
-
-
-@app.route('/agenda')
-def agenda():
-    data = request.args.get('keyword')
-    return str('agenda'+data)
-
-
-@app.route('/news')
-def news():
-    data = request.args.get('keyword')
-    return str('news'+data)
-
+    mixData = pullData(data, None, None, 'mixed', 3)
+    popData = pullData(data, None, None, 'popular', 3)
+    if len(popData) == 0:
+        popData = mixData
+    return {'popular': popData, 'agenda': mixData, 'new': mixData}
 
 @app.route('/wordcloud')
 def wordcloud():
     data = request.args.get('keyword')
-    pulldata = pullData(data, None, None, 'mixed', 300)
+    pulldata = pullData(data, None, None, 'mixed', 50)
     df = list_of_dict_to_pd(pulldata)
 
     return {'wordcloud': get_100_most_freq(cleanandcount(df))}

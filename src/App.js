@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import './App.css';
 import MainPage from './Components/mainPage'
 
@@ -12,9 +12,7 @@ class App extends Component {
 
     render() {
         return (
-            <div>
-                <MainPage />
-            </div>
+            <MainPage />
         )
     }
 }

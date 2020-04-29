@@ -1,3 +1,31 @@
+html {
+    background-color: lightcyan;
+}
+.headers {
+    background-image: linear-gradient(rgb(94, 114, 228), lightblue);
+    background-clip: border-box;
+    padding-bottom: 15px;
+}
+.headerText {
+    -webkit-text-stroke: 1px black;
+   color: white;
+   text-shadow:
+       3px 3px 0 #000,
+     -1px -1px 0 #000,  
+      1px -1px 0 #000,
+      -1px 1px 0 #000,
+       1px 1px 0 #000;
+    font-family: 'Itim';
+    font-size: 50px;
+}
+.content {
+    background-image: linear-gradient( lightblue, lightcyan);
+    background-clip: border-box;
+    padding-top: 15px;
+}
+.threeColorBar {
+    font-family: "Chonburi";
+}
 .leftbox {
     margin: 15px;
     border: 2px solid;
@@ -8,18 +36,23 @@
     text-align: center;
     white-space: nowrap;
     background-color: rgb(111, 255, 111);
+    border: 2px solid;
 }
 
 .midgrey {
     text-align: center;
     white-space: nowrap;
     background-color: rgb(182, 182, 182);
+    border: 2px solid;
+    border-left: 0px;
+    border-right: 0px;
 }
 
 .rightred {
     text-align: center;
     white-space: nowrap;
     background-color: rgb(255, 111, 111);
+    border: 2px solid;
 }
 
 .inputgroup {
@@ -38,4 +71,8 @@
 #popularity {
     font-size: 0.7rem;
     color: white;
+}
+
+.mr-auto {
+    font-family: 'Itim';
 }
