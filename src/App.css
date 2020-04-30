@@ -24,6 +24,9 @@ html {
     background-clip: border-box;
     padding-top: 15px;
 }
+.content.row {
+    margin: 0px;
+}
 .threeColorBar {
     font-family: "Chonburi";
 }
