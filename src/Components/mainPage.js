@@ -1,23 +1,26 @@
 import React, { Component } from 'react';
 import '../App.css';
-import { Col, Row, Button, InputGroup, FormControl, Toast } from 'react-bootstrap';
+import { Col, Row, Button, InputGroup, FormControl, Toast, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import ReactWordcloud from 'react-wordcloud';
 
 class MainPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            left1: '15%',
-            mid1: '55%',
-            right1: '30%',
+            left1: '33%',
+            mid1: '33%',
+            right1: '33%',
             left2: '35%',
             mid2: '40%',
             right2: '25%',
             keyword: '',
-            populars: [{ "favC": 0, "text": "No data" }],
-            agendas: [{ "favC": 0, "text": "No data" }],
-            news: [{ "favC": 0, "text": "No data" }],
-            wordcloudData: [{ "favC": 1, "text": "No data" }]
+            populars: [{ "sum": 0, "text": "No data" }],
+            agendas: [{ "sum": 0, "text": "No data" }],
+            news: [{ "sum": 0, "text": "No data" }],
+            wordcloudData: [{ "sum": 1, "text": "No data" }],
+            topClick: false,
+            midClick: false,
+            botClick: false
         };
     }
 
@@ -31,30 +34,36 @@ class MainPage extends Component {
         }
     }
 
+    handleClickTop = (e) => {
+        this.setState({ topClick: !this.state.topClick })
+    }
+    handleClickMid = (e) => {
+        this.setState({ midClick: !this.state.midClick })
+    }
+    handleClickBot = (e) => {
+        this.setState({ botClick: !this.state.botClick })
+    }
+
     submitButton = (e) => {
         if (this.state.keyword !== "") {
             fetch('http://localhost:5000/tweetExample?keyword=' + this.state.keyword)
                 .then(res => res.json())
                 .then((data) => {
                     if (data.popular.length === 0) {
-                        this.setState({ populars: [{ "favC": 0, "text": "Tweet not found" }] })
+                        this.setState({ populars: [{ "sum": 0, "text": "Tweet not found" }] })
                     } else {
                         this.setState({ populars: data.popular })
                     }
                     if (data.agenda.length === 0) {
-                        this.setState({ agendas: [{ "favC": 0, "text": "Tweet not found" }] })
+                        this.setState({ agendas: [{ "sum": 0, "text": "Tweet not found" }] })
                     } else {
                         this.setState({ agendas: data.agenda })
                     }
                     if (data.new.length === 0) {
-                        this.setState({ news: [{ "favC": 0, "text": "Tweet not found" }] })
+                        this.setState({ news: [{ "sum": 0, "text": "Tweet not found" }] })
                     } else {
                         this.setState({ news: data.new })
                     }
-                })
-            fetch('http://localhost:5000/wordcloud?keyword=' + this.state.keyword)
-                .then(res => res.json())
-                .then((data) => {
                     if (data.wordcloud.length === 0) {
                         this.setState({ wordcloudData: [{ "text": "Tweet not found", "value": 15 }] })
                     } else {
@@ -65,13 +74,14 @@ class MainPage extends Component {
     }
 
     render() {
+        let { populars, agendas, news } = this.state
         return (
             <div>
                 <div className="headers" style={{ paddingTop: 15 }}>
-                    <Row className='justify-content-md-center'>
+                    <Row>
                         <h3 className="headerText">Enter Keyword</h3>
                     </Row>
-                    <Row className='justify-content-md-center'>
+                    <Row>
                         <InputGroup className="inputgroup">
                             <FormControl
                                 placeholder="Keyword"
@@ -89,57 +99,96 @@ class MainPage extends Component {
                 </div>
                 <Row className="content">
                     <Col style={{ marginLeft: 15 }}>
-                        <Toast style={{ maxWidth: '100%' }}>
-                            <Toast.Header
-                                closeButton={false}
-                                id="headertoast"
-                            >
-                                <strong className="mr-auto" id="popular">ตัวอย่างทวิตที่ได้รับความนิยม</strong>
-                                <small id="popularity">ความนิยม</small>
-                            </Toast.Header>
-                            {this.state.populars.map(function (m, idx) {
-                                return (
-                                    <Toast.Header closeButton={false} key={idx}>
-                                        <strong className="mr-auto">{m.text}</strong>
-                                        <small style={{ marginLeft: 5 }}>{m.favC}</small>
-                                    </Toast.Header>
-                                )
-                            })}
-                        </Toast>
-                        <Toast style={{ maxWidth: '100%' }}>
-                            <Toast.Header
-                                closeButton={false}
-                                id="headertoast"
-                            >
-                                <strong className="mr-auto" id="popular">ตัวอย่างทวีตที่มี Agenda</strong>
-                                <small id="popularity">ความนิยม</small>
-                            </Toast.Header>
-                            {this.state.agendas.map(function (m, idx) {
-                                return (
-                                    <Toast.Header closeButton={false} key={idx}>
-                                        <strong className="mr-auto">{m.text}</strong>
-                                        <small style={{ marginLeft: 5 }}>{m.favC}</small>
-                                    </Toast.Header>
-                                )
-                            })}
-                        </Toast>
-                        <Toast style={{ maxWidth: '100%' }}>
-                            <Toast.Header
-                                closeButton={false}
-                                id="headertoast"
-                            >
-                                <strong className="mr-auto" id="popular">ตัวอย่างทวีตที่เป็นข่าว</strong>
-                                <small id="popularity">ความนิยม</small>
-                            </Toast.Header>
-                            {this.state.news.map(function (m, idx) {
-                                return (
-                                    <Toast.Header closeButton={false} key={idx}>
-                                        <strong className="mr-auto">{m.text}</strong>
-                                        <small style={{ marginLeft: 5 }}>{m.favC}</small>
-                                    </Toast.Header>
-                                )
-                            })}
-                        </Toast>
+                        <OverlayTrigger
+                            overlay={<Tooltip>{this.state.topClick === false ? "Click here to see more" : "Click here to se less"}</Tooltip>}
+                        >
+                            <Toast onClick={this.handleClickTop} style={{ maxWidth: '100%' }}>
+                                <Toast.Header
+                                    closeButton={false}
+                                    id="headertoast"
+                                >
+                                    <strong className="mr-auto" id="popular">ตัวอย่างทวิตที่ได้รับความนิยม</strong>
+                                    <small id="popularity">ความนิยม</small>
+                                </Toast.Header>
+                                {this.state.topClick === false ? populars.slice(0, 3).map(function (m, idx) {
+                                    return (
+                                        <Toast.Header closeButton={false} key={idx}>
+                                            <strong className="mr-auto">{m.text}</strong>
+                                            <small style={{ marginLeft: 5 }}>{m.sum}</small>
+                                        </Toast.Header>
+                                    )
+                                })
+                                    :
+                                    populars.map(function (m, idx) {
+                                        return (
+                                            <Toast.Header closeButton={false} key={idx}>
+                                                <strong className="mr-auto">{m.text}</strong>
+                                                <small style={{ marginLeft: 5 }}>{m.sum}</small>
+                                            </Toast.Header>
+                                        )
+                                    })}
+                            </Toast>
+                        </OverlayTrigger>
+                        <OverlayTrigger
+                            overlay={<Tooltip>{this.state.midClick === false ? "Click here to see more" : "Click here to se less"}</Tooltip>}
+                        >
+                            <Toast onClick={this.handleClickMid} style={{ maxWidth: '100%' }}>
+                                <Toast.Header
+                                    closeButton={false}
+                                    id="headertoast"
+                                >
+                                    <strong className="mr-auto" id="popular">ตัวอย่างทวีตที่มี Agenda</strong>
+                                    <small id="popularity">ความนิยม</small>
+                                </Toast.Header>
+                                {this.state.midClick === false ? agendas.slice(0, 3).map(function (m, idx) {
+                                    return (
+                                        <Toast.Header closeButton={false} key={idx}>
+                                            <strong className="mr-auto">{m.text}</strong>
+                                            <small style={{ marginLeft: 5 }}>{m.sum}</small>
+                                        </Toast.Header>
+                                    )
+                                })
+                                    :
+                                    agendas.map(function (m, idx) {
+                                        return (
+                                            <Toast.Header closeButton={false} key={idx}>
+                                                <strong className="mr-auto">{m.text}</strong>
+                                                <small style={{ marginLeft: 5 }}>{m.sum}</small>
+                                            </Toast.Header>
+                                        )
+                                    })}
+                            </Toast>
+                        </OverlayTrigger>
+                        <OverlayTrigger
+                            overlay={<Tooltip>{this.state.botClick === false ? "Click here to see more" : "Click here to se less"}</Tooltip>}
+                        >
+                            <Toast onClick={this.handleClickBot} style={{ maxWidth: '100%' }}>
+                                <Toast.Header
+                                    closeButton={false}
+                                    id="headertoast"
+                                >
+                                    <strong className="mr-auto" id="popular">ตัวอย่างทวีตที่เป็นข่าว</strong>
+                                    <small id="popularity">ความนิยม</small>
+                                </Toast.Header>
+                                {this.state.botClick === false ? news.slice(0, 3).map(function (m, idx) {
+                                    return (
+                                        <Toast.Header closeButton={false} key={idx}>
+                                            <strong className="mr-auto">{m.text}</strong>
+                                            <small style={{ marginLeft: 5 }}>{m.sum}</small>
+                                        </Toast.Header>
+                                    )
+                                })
+                                    :
+                                    news.map(function (m, idx) {
+                                        return (
+                                            <Toast.Header closeButton={false} key={idx}>
+                                                <strong className="mr-auto">{m.text}</strong>
+                                                <small style={{ marginLeft: 5 }}>{m.sum}</small>
+                                            </Toast.Header>
+                                        )
+                                    })}
+                            </Toast>
+                        </OverlayTrigger>
                     </Col>
                     <Col className="threeColorBar" style={{ margin: 15 }}>
                         <Row style={{ marginRight: '20px' }}>
@@ -166,7 +215,7 @@ class MainPage extends Component {
                             <ReactWordcloud
                                 words={this.state.wordcloudData}
                                 options={{
-                                    enableTooltip: true,
+                                    enableTooltip: false,
                                     deterministic: false,
                                     fontFamily: 'Sriracha',
                                     fontSizes: [10, 50],

@@ -33,10 +33,12 @@ def pullData(keyword, ge, lang, typo, c):
                                result_type=typo).items(c):
         counter += 1
         dict_ = {'text': tweet.full_text,
-                 'favC': tweet.favorite_count
+                 'favC': tweet.favorite_count,
+                 'retw': tweet.retweet_count,
+                 'sum': tweet.favorite_count+tweet.retweet_count
                  }
         list_.append(dict_)
-    return sorted(list_, key=lambda i: i['favC'], reverse=True)
+    return sorted(list_, key=lambda i: i['sum'], reverse=True)
 
 
 def list_of_dict_to_pd(list_):
@@ -77,22 +79,11 @@ def test():
 
 
 @app.route('/tweetExample')
-def popular():
+def fetchAPI():
     data = request.args.get('keyword')
-    mixData = pullData(data, None, None, 'mixed', 3)
-    popData = pullData(data, None, None, 'popular', 3)
-    if len(popData) == 0:
-        popData = mixData
-    return {'popular': popData, 'agenda': mixData, 'new': mixData}
-
-@app.route('/wordcloud')
-def wordcloud():
-    data = request.args.get('keyword')
-    pulldata = pullData(data, None, None, 'mixed', 50)
-    df = list_of_dict_to_pd(pulldata)
-
-    return {'wordcloud': get_100_most_freq(cleanandcount(df))}
-
+    mixData = pullData(data, None, None, 'mixed', 50)
+    df = list_of_dict_to_pd(mixData)
+    return {'popular': mixData, 'agenda': mixData, 'new': mixData,'wordcloud': get_100_most_freq(cleanandcount(df))}
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, use_reloader=True)

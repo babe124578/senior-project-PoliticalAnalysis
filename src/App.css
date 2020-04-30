@@ -17,6 +17,7 @@ html {
        1px 1px 0 #000;
     font-family: 'Itim';
     font-size: 50px;
+    margin-left: calc(50% - 157.6px);
 }
 .content {
     background-image: linear-gradient( lightblue, lightcyan);
@@ -36,27 +37,28 @@ html {
     text-align: center;
     white-space: nowrap;
     background-color: rgb(111, 255, 111);
-    border: 2px solid;
+  /*  border: 2px solid;*/
 }
 
 .midgrey {
     text-align: center;
     white-space: nowrap;
     background-color: rgb(182, 182, 182);
-    border: 2px solid;
+    /*border: 2px solid;
     border-left: 0px;
-    border-right: 0px;
+    border-right: 0px;*/
 }
 
 .rightred {
     text-align: center;
     white-space: nowrap;
     background-color: rgb(255, 111, 111);
-    border: 2px solid;
+    /*border: 2px solid;*/
 }
 
 .inputgroup {
     width: 300px !important;
+    margin-left: calc(50% - 150px);
 }
 
 #popular {
