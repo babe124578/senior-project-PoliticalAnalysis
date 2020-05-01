@@ -9,7 +9,7 @@ import joblib
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
-def isNewPredict(df):
+def disAgreeOpPredict(df):
     df["processed"] = df.text.map(lambda x: "|".join(process_thai(x)))
     df["wc"] = df.processed.map(lambda x: len(x.split("|")))
     df["uwc"] = df.processed.map(lambda x: len(set(x.split("|"))))
@@ -25,7 +25,7 @@ def isNewPredict(df):
     num = scaler_fit.transform(df[["wc","uwc"]].astype(float))
     X = np.concatenate([num,text.toarray()],axis=1)
 
-    loaded_model = joblib.load('isNews.sav')
+    loaded_model = joblib.load('disAgreeOp.sav')
     result = loaded_model.predict(X)
 
     df["result"] = result
