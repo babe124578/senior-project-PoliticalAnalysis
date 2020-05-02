@@ -28,6 +28,6 @@ def disAgreeOpPredict(df):
     loaded_model = joblib.load('disAgreeOp.sav')
     result = loaded_model.predict(X)
 
-    df["result"] = result
+    df["isDisagreeOp"] = result
 
     return df

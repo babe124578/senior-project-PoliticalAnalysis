@@ -28,6 +28,6 @@ def isAgendaPredict(df):
     loaded_model = joblib.load('isAgenda.sav')
     result = loaded_model.predict(X)
 
-    df["result"] = result
+    df["isAgenda"] = result
 
     return df

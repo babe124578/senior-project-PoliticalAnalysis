@@ -21,6 +21,6 @@ def disAgreeGovPredict(df):
     loaded_model = joblib.load('disAgreeGov.sav')
     result = loaded_model.predict(X)
 
-    df["result"] = result
+    df["isDisagreeGov"] = result
 
     return df

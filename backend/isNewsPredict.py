@@ -28,6 +28,6 @@ def isNewPredict(df):
     loaded_model = joblib.load('isNews.sav')
     result = loaded_model.predict(X)
 
-    df["result"] = result
+    df["isNews"] = result
 
     return df

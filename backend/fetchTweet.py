@@ -12,7 +12,10 @@ from clean import remove_emoji, remove_punct, remove_url
 from tweepy import OAuthHandler
 from isAgendaPredict import isAgendaPredict
 from isNewsPredict import isNewPredict
-
+from agreeGovPredict import agreeGovPredict
+from agreeOpPredict import agreeOpPredict
+from disAgreeGovPredict import disAgreeGovPredict
+from disAgreeOpPredict import disAgreeOpPredict
 
 app = Flask(__name__)
 
@@ -26,6 +29,8 @@ access_secret = access_key['access_secret']
 auth = OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_secret)
 API = tweepy.API(auth)
+
+# get tweet
 
 
 def pullData(keyword, ge, lang, typo, c):
@@ -46,8 +51,8 @@ def pullData(keyword, ge, lang, typo, c):
         list_.append(dict_)
     return sorted(list_, key=lambda i: i['sum'], reverse=True)
 
-def getDf(list_):
-    return pd.DataFrame(list_)
+# wordcloud part
+
 
 def get_list_of_text(list_):
     newlist = []
@@ -71,6 +76,7 @@ def cleanandcount(newlist):
         tmp.append([letter, count])
     return tmp
 
+
 def get_100_most_freq(temp):
     tmp = []
     for i in temp:
@@ -79,6 +85,30 @@ def get_100_most_freq(temp):
         if i[1] > 1:
             tmp.append({'text': i[0], 'value': i[1]})
     return tmp
+
+# predict part
+
+
+def getDf(list_):
+    return pd.DataFrame(list_)
+
+
+def predict(df,fnName):
+    df = fnName(df)
+    try:
+        df = df.drop(['processed'], axis=1)
+    except:
+        pass
+    try:
+        df = df.drop(['wc'], axis=1)
+    except:
+        pass
+    try:
+        df = df.drop(['uwc'], axis=1)
+    except:
+        pass
+    return df
+
 
 @cross_origin()
 @app.route('/test')
@@ -90,8 +120,33 @@ def test():
 def fetchAPI():
     data = request.args.get('keyword')
     mixData = pullData(data, None, None, 'mixed', 50)
+
+    predNew = predict(getDf(mixData),isNewPredict)
+    predAgn = predict(predNew,isAgendaPredict)
+    predGov = predict(predAgn,agreeGovPredict)
+    predDgv = predict(predGov,agreeOpPredict)
+    predOp = predict(predDgv,disAgreeGovPredict)
+    predDO = predict(predOp,disAgreeOpPredict)
+    predFinal = predDO.to_dict('result')
+
+    news_, agenda_, agreeGov_, agreeOp_, disAgreeGov_, disAgreeOp_ = [],[],[],[],[],[]
+    for i in predFinal:
+        if i['isNews'] == 1:
+            news_.append(i)
+        if i['isAgenda'] == 1:
+            agenda_.append(i)
+        if i['isAgreeGov'] == 1:
+            agreeGov_.append(i)
+        if i['isAgreeOp'] == 1:
+            agreeOp_.append(i)
+        if i['isDisagreeGov'] == 1:
+            disAgreeGov_.append(i)
+        if i['isDisagreeOp'] == 1:
+            disAgreeOp_.append(i)
+
     text = get_list_of_text(mixData)
-    return {'popular': mixData, 'agenda': mixData, 'new': mixData,'wordcloud': get_100_most_freq(cleanandcount(text))}
+    return {'popular': predFinal, 'agenda': agenda_, 'new': news_, 'agreeGov': agreeGov_, 'agreeOp': agreeOp_, 'disAgreeGov': disAgreeGov_, 'disAgreeOp': disAgreeOp_, 'wordcloud': get_100_most_freq(cleanandcount(text))}
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, use_reloader=True)

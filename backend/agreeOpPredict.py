@@ -28,6 +28,6 @@ def agreeOpPredict(df):
     loaded_model = joblib.load('agreeOp.sav')
     result = loaded_model.predict(X)
 
-    df["result"] = result
+    df["isAgreeOp"] = result
 
     return df
