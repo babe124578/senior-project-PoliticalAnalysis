@@ -121,32 +121,34 @@ def fetchAPI():
     data = request.args.get('keyword')
     mixData = pullData(data, None, None, 'mixed', 50)
 
-    predNew = predict(getDf(mixData),isNewPredict)
-    predAgn = predict(predNew,isAgendaPredict)
-    predGov = predict(predAgn,agreeGovPredict)
-    predDgv = predict(predGov,agreeOpPredict)
-    predOp = predict(predDgv,disAgreeGovPredict)
-    predDO = predict(predOp,disAgreeOpPredict)
-    predFinal = predDO.to_dict('result')
+    if len(mixData) > 0:
+        predNew = predict(getDf(mixData),isNewPredict)
+        predAgn = predict(predNew,isAgendaPredict)
+        predGov = predict(predAgn,agreeGovPredict)
+        predDgv = predict(predGov,agreeOpPredict)
+        predOp = predict(predDgv,disAgreeGovPredict)
+        predDO = predict(predOp,disAgreeOpPredict)
+        predFinal = predDO.to_dict('result')
 
-    news_, agenda_, agreeGov_, agreeOp_, disAgreeGov_, disAgreeOp_ = [],[],[],[],[],[]
-    for i in predFinal:
-        if i['isNews'] == 1:
-            news_.append(i)
-        if i['isAgenda'] == 1:
-            agenda_.append(i)
-        if i['isAgreeGov'] == 1:
-            agreeGov_.append(i)
-        if i['isAgreeOp'] == 1:
-            agreeOp_.append(i)
-        if i['isDisagreeGov'] == 1:
-            disAgreeGov_.append(i)
-        if i['isDisagreeOp'] == 1:
-            disAgreeOp_.append(i)
+        news_, agenda_, agreeGov_, agreeOp_, disAgreeGov_, disAgreeOp_ = [],[],[],[],[],[]
+        for i in predFinal:
+            if i['isNews'] == 1:
+                news_.append(i)
+            if i['isAgenda'] == 1:
+                agenda_.append(i)
+            if i['isAgreeGov'] == 1:
+                agreeGov_.append(i)
+            if i['isAgreeOp'] == 1:
+                agreeOp_.append(i)
+            if i['isDisagreeGov'] == 1:
+                disAgreeGov_.append(i)
+            if i['isDisagreeOp'] == 1:
+                disAgreeOp_.append(i)
 
-    text = get_list_of_text(mixData)
-    return {'popular': predFinal, 'agenda': agenda_, 'new': news_, 'agreeGov': agreeGov_, 'agreeOp': agreeOp_, 'disAgreeGov': disAgreeGov_, 'disAgreeOp': disAgreeOp_, 'wordcloud': get_100_most_freq(cleanandcount(text))}
-
+        text = get_list_of_text(mixData)
+        return {'popular': predFinal, 'agenda': agenda_, 'new': news_, 'agreeGov': agreeGov_, 'agreeOp': agreeOp_, 'disAgreeGov': disAgreeGov_, 'disAgreeOp': disAgreeOp_, 'wordcloud': get_100_most_freq(cleanandcount(text))}
+    else:
+        return {'popular': [], 'agenda': [], 'new': [], 'agreeGov': [], 'agreeOp': [], 'disAgreeGov': [], 'disAgreeOp': [], 'wordcloud': []}
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, use_reloader=True)

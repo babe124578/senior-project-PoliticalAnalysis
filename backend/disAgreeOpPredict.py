@@ -11,19 +11,12 @@ from sklearn.preprocessing import StandardScaler
 
 def disAgreeOpPredict(df):
     df["processed"] = df.text.map(lambda x: "|".join(process_thai(x)))
-    df["wc"] = df.processed.map(lambda x: len(x.split("|")))
-    df["uwc"] = df.processed.map(lambda x: len(set(x.split("|"))))
 
-    tfidf_fit = joblib.load('tfidf.sav')
+    token_fit = joblib.load('token.sav')
 
-    text = tfidf_fit.transform(df["text"])
+    text = token_fit.transform(df["text"])
 
-
-    scaler = StandardScaler()
-    scaler_fit = scaler.fit(df[["wc","uwc"]].astype(float))
-
-    num = scaler_fit.transform(df[["wc","uwc"]].astype(float))
-    X = np.concatenate([num,text.toarray()],axis=1)
+    X = text.toarray()
 
     loaded_model = joblib.load('disAgreeOp.sav')
     result = loaded_model.predict(X)

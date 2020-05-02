@@ -11,12 +11,19 @@ from sklearn.preprocessing import StandardScaler
 
 def agreeGovPredict(df):
     df["processed"] = df.text.map(lambda x: "|".join(process_thai(x)))
+    df["wc"] = df.processed.map(lambda x: len(x.split("|")))
+    df["uwc"] = df.processed.map(lambda x: len(set(x.split("|"))))
 
-    token_fit = joblib.load('token.sav')
+    tfidf_fit = joblib.load('tfidf.sav')
 
-    text = token_fit.transform(df["text"])
+    text = tfidf_fit.transform(df["text"])
 
-    X = text.toarray()
+
+    scaler = StandardScaler()
+    scaler_fit = scaler.fit(df[["wc","uwc"]].astype(float))
+
+    num = scaler_fit.transform(df[["wc","uwc"]].astype(float))
+    X = np.concatenate([num,text.toarray()],axis=1)
 
     loaded_model = joblib.load('agreeGov.sav')
     result = loaded_model.predict(X)
