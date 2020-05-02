@@ -1,12 +1,18 @@
-from flask_cors import CORS, cross_origin
-from flask import Flask, Response, request
 import io
-from auth import access_key
-from clean import remove_emoji, remove_punct, remove_url
-from tweepy import OAuthHandler
 import tweepy
 import json
 import collections
+import pandas as pd
+
+from flask_cors import CORS, cross_origin
+from flask import Flask, Response, request
+
+from auth import access_key
+from clean import remove_emoji, remove_punct, remove_url
+from tweepy import OAuthHandler
+from isAgendaPredict import isAgendaPredict
+from isNewsPredict import isNewPredict
+
 
 app = Flask(__name__)
 
@@ -40,8 +46,10 @@ def pullData(keyword, ge, lang, typo, c):
         list_.append(dict_)
     return sorted(list_, key=lambda i: i['sum'], reverse=True)
 
+def getDf(list_):
+    return pd.DataFrame(list_)
 
-def list_of_dict_to_pd(list_):
+def get_list_of_text(list_):
     newlist = []
     for i in list_:
         newlist.append(i['text'])
@@ -82,8 +90,8 @@ def test():
 def fetchAPI():
     data = request.args.get('keyword')
     mixData = pullData(data, None, None, 'mixed', 50)
-    df = list_of_dict_to_pd(mixData)
-    return {'popular': mixData, 'agenda': mixData, 'new': mixData,'wordcloud': get_100_most_freq(cleanandcount(df))}
+    text = get_list_of_text(mixData)
+    return {'popular': mixData, 'agenda': mixData, 'new': mixData,'wordcloud': get_100_most_freq(cleanandcount(text))}
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, use_reloader=True)

@@ -9,7 +9,7 @@ import joblib
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
-def isAgendaPredict(df);
+def isAgendaPredict(df):
     df["processed"] = df.text.map(lambda x: "|".join(process_thai(x)))
     df["wc"] = df.processed.map(lambda x: len(x.split("|")))
     df["uwc"] = df.processed.map(lambda x: len(set(x.split("|"))))
