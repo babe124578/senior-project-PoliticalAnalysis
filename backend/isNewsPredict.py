@@ -10,11 +10,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
 def isNewPredict(df):
-    df["processed"] = df.text.map(lambda x: "|".join(process_thai(x)))
 
-    token_fit = joblib.load('token.sav')
+    tfidf_fit = joblib.load('isNewstfidf.sav')
 
-    text = token_fit.transform(df["text"])
+    text = tfidf_fit.transform(df["text"])
 
     X = text.toarray()
 

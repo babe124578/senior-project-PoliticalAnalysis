@@ -10,9 +10,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
 def disAgreeOpPredict(df):
-    df["processed"] = df.text.map(lambda x: "|".join(process_thai(x)))
 
-    token_fit = joblib.load('token.sav')
+    token_fit = joblib.load('disAgreeOpbow.sav')
 
     text = token_fit.transform(df["text"])
 

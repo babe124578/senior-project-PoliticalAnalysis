@@ -10,20 +10,12 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
 def agreeGovPredict(df):
-    df["processed"] = df.text.map(lambda x: "|".join(process_thai(x)))
-    df["wc"] = df.processed.map(lambda x: len(x.split("|")))
-    df["uwc"] = df.processed.map(lambda x: len(set(x.split("|"))))
 
-    tfidf_fit = joblib.load('tfidf.sav')
+    tfidf_fit = joblib.load('agreeGovtfidf.sav')
 
     text = tfidf_fit.transform(df["text"])
 
-
-    scaler = StandardScaler()
-    scaler_fit = scaler.fit(df[["wc","uwc"]].astype(float))
-
-    num = scaler_fit.transform(df[["wc","uwc"]].astype(float))
-    X = np.concatenate([num,text.toarray()],axis=1)
+    X = text.toarray()
 
     loaded_model = joblib.load('agreeGov.sav')
     result = loaded_model.predict(X)
