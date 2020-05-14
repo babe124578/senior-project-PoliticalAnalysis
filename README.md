@@ -1,3 +1,27 @@
+To run this project 
+
+In the project directory, you can run:
+
+### `npm start`
+<br />
+
+In the backend directory you can run
+
+### `python fetchTweet.py`
+
+## note
+This require file auth.py in the same directory of fetchTweet.py
+copy and paste code below to auth.py and change your twitter key and secret to your own.
+
+```python
+access_key = {'consumer_key':'<your-consumer-key>',
+'consumer_secret':'<your-consumer-secret>',
+'access_token':'<your-access-token>',
+'access_secret':'<your-access-secret>'}
+```
+
+--------------------------------------------------------------------------------------------------
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

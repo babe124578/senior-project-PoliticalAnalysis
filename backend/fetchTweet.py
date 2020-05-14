@@ -10,17 +10,26 @@ from flask import Flask, Response, request
 from auth import access_key
 from clean import remove_emoji, remove_punct, remove_url
 from tweepy import OAuthHandler
-from isAgendaPredict import isAgendaPredict
-from isNewsPredict import isNewPredict
-from agreeGovPredict import agreeGovPredict
-from agreeOpPredict import agreeOpPredict
-from disAgreeGovPredict import disAgreeGovPredict
-from disAgreeOpPredict import disAgreeOpPredict
+from model.isAgendaPredict import isAgendaPredict
+from model.isNewsPredict import isNewPredict
+from model.agreeGovPredict import agreeGovPredict
+from model.agreeOpPredict import agreeOpPredict
+from model.disAgreeGovPredict import disAgreeGovPredict
+from model.disAgreeOpPredict import disAgreeOpPredict
 
 app = Flask(__name__)
 
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
+
+#key and secret store in auth.py same directory of this file 
+#in auth.py have structure like this ... 
+
+#copy 4 lines below to auth.py then remove "#" and use your own key and secret
+# access_key = {'consumer_key':'<your-consumer-key>',
+# 'consumer_secret':'<your-consumer-secret>',
+# 'access_token':'<your-access-token>',
+# 'access_secret':'<your-access-secret>'}
 
 consumer_key = access_key['consumer_key']
 consumer_secret = access_key['consumer_secret']
